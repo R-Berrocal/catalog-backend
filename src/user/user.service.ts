@@ -1,15 +1,19 @@
-import { Injectable, Logger } from '@nestjs/common';
+import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
 import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
+import { HandleExceptionsService } from 'src/handle-exceptions/handle-exceptions.service';
 
 @Injectable()
 export class UserService {
   private logger: Logger = new Logger(UserService.name);
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly handleExceptionService: HandleExceptionsService,
+  ) {}
   async create({ photo, ...createUserDto }: CreateUserDto): Promise<User> {
     try {
       createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
@@ -23,6 +27,7 @@ export class UserService {
       return createUser.save();
     } catch (error) {
       this.logger.error(error);
+      this.handleExceptionService.handleExceptions(error);
     }
   }
 
@@ -30,11 +35,15 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: string) {
+  async findOne(id: string): Promise<User> {
     try {
-      return this.userModel.findById(id);
+      const user = await this.userModel.findById(id);
+      console.log({ user });
+      if (!user) throw new NotFoundException(`User with id: ${id} not found`);
+      return user;
     } catch (error) {
       this.logger.error(error);
+      this.handleExceptionService.handleExceptions(error);
     }
   }
 

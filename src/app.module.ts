@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { UserModule } from './user/user.module';
 import { EnvConfiguration } from './config/env.config';
 import { JoiValidationEnvSchema } from './config/joi.validation';
+import { HandleExceptionsModule } from './handle-exceptions/handle-exceptions.module';
 
 @Module({
   imports: [
@@ -20,6 +21,7 @@ import { JoiValidationEnvSchema } from './config/joi.validation';
     }),
     MongooseModule.forRoot(process.env.MONGODB),
     UserModule,
+    HandleExceptionsModule,
   ],
   controllers: [AppController],
   providers: [AppService],

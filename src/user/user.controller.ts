@@ -22,7 +22,7 @@ export class UserController {
 
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
-  create(
+  async create(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() photo: Express.Multer.File,
   ): Promise<User> {
@@ -36,7 +36,7 @@ export class UserController {
   }
 
   @Get(':id')
-  findOne(@Param('id', ParseMongoIdPipe) id: string) {
+  async findOne(@Param('id', ParseMongoIdPipe) id: string) {
     return this.userService.findOne(id);
   }
 
