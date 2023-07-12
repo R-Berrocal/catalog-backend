@@ -30,8 +30,12 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  findOne(id: number) {
-    return `This action returns a #${id} user`;
+  findOne(id: string) {
+    try {
+      return this.userModel.findById(id);
+    } catch (error) {
+      this.logger.error(error);
+    }
   }
 
   update(id: number, updateUserDto: UpdateUserDto) {
