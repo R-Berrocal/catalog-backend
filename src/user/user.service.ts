@@ -5,15 +5,11 @@ import * as bcrypt from 'bcrypt';
 import { CreateUserDto, CreateUserOutput } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
-import { HandleExceptionsService } from 'src/handle-exceptions/handle-exceptions.service';
 
 @Injectable()
 export class UserService {
   private logger: Logger = new Logger(UserService.name);
-  constructor(
-    @InjectModel(User.name) private userModel: Model<User>,
-    private readonly handleExceptionService: HandleExceptionsService,
-  ) {}
+  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
   async create(
     createUserDto: CreateUserDto,
     photo?: Express.Multer.File,
@@ -45,14 +41,9 @@ export class UserService {
   }
 
   async findOne(id: string): Promise<User> {
-    try {
-      const user = await this.userModel.findById(id);
-      if (!user) throw new NotFoundException(`User with id: ${id} not found`);
-      return user;
-    } catch (error) {
-      this.logger.error(error);
-      this.handleExceptionService.handleExceptions(error);
-    }
+    const user = await this.userModel.findById(id);
+    if (!user) throw new NotFoundException(`User with id: ${id} not found`);
+    return user;
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {
