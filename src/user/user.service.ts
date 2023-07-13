@@ -38,7 +38,6 @@ export class UserService {
   async findOne(id: string): Promise<User> {
     try {
       const user = await this.userModel.findById(id);
-      console.log({ user });
       if (!user) throw new NotFoundException(`User with id: ${id} not found`);
       return user;
     } catch (error) {
@@ -47,8 +46,10 @@ export class UserService {
     }
   }
 
-  update(id: number, updateUserDto: UpdateUserDto) {
-    return `This action updates a #${id} user`;
+  update(id: string, updateUserDto: UpdateUserDto) {
+    return this.userModel.findByIdAndUpdate(id, updateUserDto, {
+      new: true,
+    });
   }
 
   remove(id: number) {
