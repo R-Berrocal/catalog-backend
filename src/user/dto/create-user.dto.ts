@@ -1,25 +1,15 @@
-import {
-  IsEmail,
-  IsStrongPassword,
-  IsOptional,
-  IsNotEmpty,
-} from 'class-validator';
+import { PickType } from '@nestjs/mapped-types';
+import { User } from '../schemas/user.schema';
+import { CoreOutput } from 'src/common/dto/core.output';
 
-export class CreateUserDto {
-  @IsNotEmpty()
-  name: string;
+export class CreateUserDto extends PickType(User, [
+  'name',
+  'lastName',
+  'email',
+  'password',
+  'phone',
+]) {}
 
-  @IsNotEmpty()
-  lastName: string;
-
-  @IsEmail()
-  email: string;
-
-  @IsStrongPassword()
-  password: string;
-
-  @IsOptional()
-  phone?: string;
-
-  photo?: Express.Multer.File;
+export class CreateUserOutput extends CoreOutput {
+  user?: User;
 }
