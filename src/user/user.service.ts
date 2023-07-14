@@ -2,18 +2,23 @@ import { Injectable, Logger, NotFoundException } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto, CreateUserOutput } from './dto/create-user.dto';
+import { CreateUserDto, UserOutput } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
+import { HandleExceptionsService } from 'src/handle-exceptions/handle-exceptions.service';
 
 @Injectable()
 export class UserService {
   private logger: Logger = new Logger(UserService.name);
-  constructor(@InjectModel(User.name) private userModel: Model<User>) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<User>,
+    private readonly handleExceptionService: HandleExceptionsService,
+  ) {}
+
   async create(
     createUserDto: CreateUserDto,
     photo?: Express.Multer.File,
-  ): Promise<CreateUserOutput> {
+  ): Promise<UserOutput> {
     try {
       createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
 
@@ -29,10 +34,7 @@ export class UserService {
       };
     } catch (error) {
       this.logger.error(error);
-      return {
-        ok: false,
-        error: error.message,
-      };
+      this.handleExceptionService.handleExceptions(error);
     }
   }
 
@@ -40,10 +42,15 @@ export class UserService {
     return `This action returns all user`;
   }
 
-  async findOne(id: string): Promise<User> {
-    const user = await this.userModel.findById(id);
-    if (!user) throw new NotFoundException(`User with id: ${id} not found`);
-    return user;
+  async findOne(id: string): Promise<UserOutput> {
+    try {
+      const user = await this.userModel.findById(id);
+      if (!user) throw new NotFoundException(`User with id: ${id} not found`);
+      return { ok: true, user };
+    } catch (error) {
+      this.logger.error(error);
+      this.handleExceptionService.handleExceptions(error);
+    }
   }
 
   update(id: string, updateUserDto: UpdateUserDto) {

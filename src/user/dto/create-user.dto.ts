@@ -1,6 +1,5 @@
 import { PickType } from '@nestjs/mapped-types';
 import { User } from '../schemas/user.schema';
-import { CoreOutput } from 'src/common/dto/core.output';
 
 export class CreateUserDto extends PickType(User, [
   'name',
@@ -10,6 +9,7 @@ export class CreateUserDto extends PickType(User, [
   'phone',
 ]) {}
 
-export class CreateUserOutput extends CoreOutput {
+export class UserOutput {
+  ok?: boolean;
   user?: User;
 }

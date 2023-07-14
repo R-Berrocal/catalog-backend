@@ -12,7 +12,7 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { UserService } from './user.service';
-import { CreateUserDto, CreateUserOutput } from './dto/create-user.dto';
+import { CreateUserDto, UserOutput } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 
 @Controller('user')
@@ -24,7 +24,7 @@ export class UserController {
   async create(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() photo: Express.Multer.File,
-  ): Promise<CreateUserOutput> {
+  ): Promise<UserOutput> {
     return this.userService.create(createUserDto, photo);
   }
 
