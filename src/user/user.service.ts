@@ -38,10 +38,6 @@ export class UserService {
     }
   }
 
-  findAll() {
-    return `This action returns all user`;
-  }
-
   async findOne(id: string): Promise<UserOutput> {
     try {
       const user = await this.userModel.findById(id);

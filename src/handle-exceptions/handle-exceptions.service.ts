@@ -18,6 +18,10 @@ export class HandleExceptionsService {
       throw new NotFoundException(error.message);
     }
 
+    if (error.message.includes('strictPopulate')) {
+      throw new BadRequestException(error.message);
+    }
+
     throw new InternalServerErrorException(`Check server logs`);
   }
 }

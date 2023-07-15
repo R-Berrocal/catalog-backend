@@ -10,14 +10,25 @@ import {
   UseInterceptors,
 } from '@nestjs/common';
 import { FileInterceptor } from '@nestjs/platform-express';
+import { InjectModel } from '@nestjs/mongoose';
+import { Model } from 'mongoose';
 import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { UserService } from './user.service';
 import { CreateUserDto, UserOutput } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
+import { createBasePaginationDto } from '../common/common.controller';
+import { User } from './schemas/user.schema';
+
+const PaginationDto = createBasePaginationDto<User>();
 
 @Controller('user')
-export class UserController {
-  constructor(private readonly userService: UserService) {}
+export class UserController extends PaginationDto {
+  constructor(
+    private readonly userService: UserService,
+    @InjectModel(User.name) readonly userModel: Model<User>,
+  ) {
+    super(userModel);
+  }
 
   @Post()
   @UseInterceptors(FileInterceptor('photo'))
@@ -26,11 +37,6 @@ export class UserController {
     @UploadedFile() photo: Express.Multer.File,
   ): Promise<UserOutput> {
     return this.userService.create(createUserDto, photo);
-  }
-
-  @Get()
-  findAll() {
-    return this.userService.findAll();
   }
 
   @Get(':id')
