@@ -2,7 +2,6 @@ import {
   Body,
   Controller,
   Delete,
-  Get,
   Param,
   Patch,
   Post,
@@ -12,7 +11,6 @@ import {
 import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
-import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { UserService } from './user.service';
 import { CreateUserDto, UserOutput } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
@@ -37,11 +35,6 @@ export class UserController extends PaginationDto {
     @UploadedFile() photo: Express.Multer.File,
   ): Promise<UserOutput> {
     return this.userService.create(createUserDto, photo);
-  }
-
-  @Get(':id')
-  async findOne(@Param('id', ParseMongoIdPipe) id: string) {
-    return this.userService.findOne(id);
   }
 
   @Patch(':id')

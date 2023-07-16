@@ -1,4 +1,4 @@
-import { Injectable, Logger, NotFoundException } from '@nestjs/common';
+import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
@@ -32,17 +32,6 @@ export class UserService {
         ok: true,
         user: await createUser.save(),
       };
-    } catch (error) {
-      this.logger.error(error);
-      this.handleExceptionService.handleExceptions(error);
-    }
-  }
-
-  async findOne(id: string): Promise<UserOutput> {
-    try {
-      const user = await this.userModel.findById(id);
-      if (!user) throw new NotFoundException(`User with id: ${id} not found`);
-      return { ok: true, user };
     } catch (error) {
       this.logger.error(error);
       this.handleExceptionService.handleExceptions(error);
