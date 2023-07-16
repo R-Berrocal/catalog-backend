@@ -16,10 +16,10 @@ import { ParseMongoIdPipe } from 'src/common/pipes/parse-mongo-id.pipe';
 import { UserService } from './user.service';
 import { CreateUserDto, UserOutput } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
-import { createBasePaginationDto } from '../common/common.controller';
+import { createBaseController } from '../common/common.controller';
 import { User } from './schemas/user.schema';
 
-const PaginationDto = createBasePaginationDto<User>();
+const PaginationDto = createBaseController<User>();
 
 @Controller('user')
 export class UserController extends PaginationDto {

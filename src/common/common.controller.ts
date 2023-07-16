@@ -3,7 +3,7 @@ import { Model } from 'mongoose';
 import { PaginationDto } from './dto/Pagination.dto';
 import { CommonService } from './common.service';
 
-export function createBasePaginationDto<T>() {
+export function createBaseController<T>() {
   @Controller('/')
   abstract class BaseController {
     readonly commonService: CommonService = new CommonService();
