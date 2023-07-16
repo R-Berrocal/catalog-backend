@@ -47,4 +47,16 @@ export class CommonService {
       this.handleExceptionService.handleExceptions(error);
     }
   }
+
+  async remove<T>(id: string, model: Model<T>): Promise<ItemOutputType<T>> {
+    try {
+      const item = await this.findOne(id, model);
+      await model.findByIdAndUpdate(id, { active: false });
+      return item;
+    } catch (error) {
+      console.log(error);
+      this.logger.error(error);
+      this.handleExceptionService.handleExceptions(error);
+    }
+  }
 }

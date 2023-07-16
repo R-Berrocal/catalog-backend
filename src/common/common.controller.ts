@@ -1,4 +1,4 @@
-import { Controller, Get, Param, Query } from '@nestjs/common';
+import { Controller, Delete, Get, Param, Query } from '@nestjs/common';
 import { Model } from 'mongoose';
 import { PaginationDto } from './dto/Pagination.dto';
 import { CommonService } from './common.service';
@@ -24,6 +24,11 @@ export function createBaseController<T>() {
       @Param('id', ParseMongoIdPipe) id: string,
     ): Promise<ItemOutputType<T>> {
       return this.commonService.findOne<T>(id, this.model);
+    }
+
+    @Delete(':id')
+    remove(@Param('id', ParseMongoIdPipe) id: string) {
+      return this.commonService.remove(id, this.model);
     }
   }
 
