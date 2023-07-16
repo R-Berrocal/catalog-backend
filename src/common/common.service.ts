@@ -40,7 +40,7 @@ export class CommonService {
   async findOne<T>(id: string, model: Model<T>): Promise<ItemOutputType<T>> {
     try {
       const item = await model.findById(id);
-      if (!item) throw new NotFoundException(`User with id: ${id} not found`);
+      if (!item) throw new NotFoundException(`Item with id: ${id} not found`);
       return { ok: true, item };
     } catch (error) {
       this.logger.error(error);
@@ -54,7 +54,6 @@ export class CommonService {
       await model.findByIdAndUpdate(id, { active: false });
       return item;
     } catch (error) {
-      console.log(error);
       this.logger.error(error);
       this.handleExceptionService.handleExceptions(error);
     }
