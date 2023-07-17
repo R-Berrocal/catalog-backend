@@ -1,7 +1,6 @@
 import {
   Body,
   Controller,
-  Delete,
   Param,
   Patch,
   Post,
@@ -12,15 +11,15 @@ import { FileInterceptor } from '@nestjs/platform-express';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import { UserService } from './user.service';
-import { CreateUserDto, UserOutput } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { createBaseController } from '../common/common.controller';
 import { User } from './schemas/user.schema';
 
-const PaginationDto = createBaseController<User>();
+const BaseController = createBaseController<User>();
 
 @Controller('user')
-export class UserController extends PaginationDto {
+export class UserController extends BaseController {
   constructor(
     private readonly userService: UserService,
     @InjectModel(User.name) readonly userModel: Model<User>,
@@ -33,7 +32,7 @@ export class UserController extends PaginationDto {
   async create(
     @Body() createUserDto: CreateUserDto,
     @UploadedFile() photo: Express.Multer.File,
-  ): Promise<UserOutput> {
+  ): Promise<User> {
     return this.userService.create(createUserDto, photo);
   }
 

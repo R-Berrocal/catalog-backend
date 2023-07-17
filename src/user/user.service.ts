@@ -2,7 +2,7 @@ import { Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import { Model } from 'mongoose';
 import * as bcrypt from 'bcrypt';
-import { CreateUserDto, UserOutput } from './dto/create-user.dto';
+import { CreateUserDto } from './dto/create-user.dto';
 import { UpdateUserDto } from './dto/update-user.dto';
 import { User } from './schemas/user.schema';
 import { HandleExceptionsService } from 'src/handle-exceptions/handle-exceptions.service';
@@ -18,7 +18,7 @@ export class UserService {
   async create(
     createUserDto: CreateUserDto,
     photo?: Express.Multer.File,
-  ): Promise<UserOutput> {
+  ): Promise<User> {
     try {
       createUserDto.password = await bcrypt.hash(createUserDto.password, 10);
 
@@ -28,10 +28,7 @@ export class UserService {
         createUser.photo = photo.originalname;
       }
 
-      return {
-        ok: true,
-        user: await createUser.save(),
-      };
+      return await createUser.save();
     } catch (error) {
       this.logger.error(error);
       this.handleExceptionService.handleExceptions(error);

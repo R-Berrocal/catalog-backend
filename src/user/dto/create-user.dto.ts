@@ -8,8 +8,3 @@ export class CreateUserDto extends PickType(User, [
   'password',
   'phone',
 ]) {}
-
-export class UserOutput {
-  ok?: boolean;
-  user?: User;
-}
